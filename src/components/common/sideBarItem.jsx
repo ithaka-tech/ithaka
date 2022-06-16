@@ -6,13 +6,13 @@ const SideBarItem = ({ items, selectedItem, onItemSelect }) => {
     <li key={item.name}>
       <Link
         onClick={() => onItemSelect(item.name)}
-        to={item.name}
+        to={item.name.toLowerCase()}
         className={
           item.name === selectedItem ? "nav-link active" : "nav-link text-white"
         }
       >
         <div className="row align-items-start">
-          <div className="col-2">
+          <div className="col-2 ms-2">
             <i className={item.icon}></i>
           </div>
           <div className="col">{item.name}</div>

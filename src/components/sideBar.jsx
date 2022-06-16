@@ -24,7 +24,7 @@ class SideBar extends Component {
             <div
               className="d-flex flex-column flex-shrink-0 p-3 text-white"
               style={{
-                width: 280,
+                width: 230,
                 height: "100vh",
                 backgroundColor: "#363740",
               }}

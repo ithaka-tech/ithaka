@@ -36,19 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-.main-container {
-  display: flex;
-  border: 5px solid #61dafb;
-  overflow: auto;
-}
-
-.sidebar {
-  justify-content: flex-start;
-  border: 5px solid red;
-}
-
-.content {
-  flex: 1;
-  border: 5px solid rgb(255, 200, 0);
-}
