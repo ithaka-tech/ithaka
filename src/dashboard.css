@@ -76,6 +76,10 @@ body {
   .bg-ithaka {
     background-color: #363740;
   }
+
+  .navbar {
+    background-color: white;
+  }
   
   .navbar .navbar-toggler {
     top: .25rem;

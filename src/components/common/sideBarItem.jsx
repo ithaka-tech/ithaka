@@ -8,7 +8,9 @@ const SideBarItem = ({ items, selectedItem, onItemSelect }) => {
         onClick={() => onItemSelect(item.name)}
         to={item.name.toLowerCase()}
         className={
-          item.name === selectedItem ? "nav-link active" : "nav-link text-white"
+          item.name === selectedItem
+            ? "nav-link active m-1"
+            : "nav-link text-white m-1"
         }
       >
         <div className="row align-items-start">

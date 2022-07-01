@@ -22,7 +22,7 @@ class CustomersTable extends Component {
           </button>
           <button
             onClick={() => this.props.onDelete(customer)}
-            className="btn btn-danger btn-sm"
+            className="btn btn-danger btn-sm m-1"
           >
             <i className="bi bi-trash3"></i>
           </button>

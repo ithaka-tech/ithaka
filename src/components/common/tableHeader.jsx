@@ -33,7 +33,10 @@ class TableHeader extends Component {
               key={column.path || column.key}
               onClick={() => this.raiseSort(column.path)}
             >
-              {column.label} {this.renderSortIcon(column)}
+              <div style={{ whiteSpace: "nowrap" }}>
+                {column.label}
+                {this.renderSortIcon(column)}
+              </div>
             </th>
           ))}
         </tr>
