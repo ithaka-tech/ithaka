@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { saveCustomer } from "../services/customerService";
 import Joi from "joi-browser";
 import Form from "./common/form";
 
@@ -35,8 +36,11 @@ class NewCustomerForm extends Form {
 
   doSubmit = () => {
     const { navigate } = this.props;
-    const { data } = this.state;
-    console.log(data);
+    const { data: customer } = this.state;
+    console.log(customer);
+
+    // add async before the parameter ()
+    // await saveCustomer(customer);
     navigate("/home/customers");
   };
 

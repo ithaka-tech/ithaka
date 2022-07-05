@@ -320,6 +320,6 @@ const customers = [
   },
 ];
 
-export function getCustomers() {
+export function getFakeCustomers() {
   return customers;
 }

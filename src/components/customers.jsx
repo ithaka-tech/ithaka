@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import axios from "axios";
 import _ from "lodash";
 import CustomersTable from "./customersTable";
 import Pagination from "./common/pagination";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { paginate } from "../utils/paginate";
-import { getCustomers } from "../services/fakeCustomerService";
+import { getFakeCustomers } from "../services/fakeCustomerService";
+import { getCustomers, deleteCustomer } from "../services/customerService";
 import SearchBox from "./common/searchBox";
-
-const apiEndpoint = "";
 
 class Customers extends Component {
   state = {
@@ -20,7 +19,8 @@ class Customers extends Component {
   };
 
   componentDidMount() {
-    this.setState({ customers: getCustomers() });
+    // add async before componentDidMount() when using getCustomers()
+    this.setState({ customers: getFakeCustomers() });
   }
 
   handleSort = (sortColumn) => {
@@ -28,10 +28,20 @@ class Customers extends Component {
   };
 
   handleDelete = (customer) => {
-    const customers = this.state.customers.filter(
-      (c) => c._id !== customer._id
-    );
+    const originalCustomers = this.state.customers;
+    const customers = originalCustomers.filter((c) => c._id !== customer._id);
     this.setState({ customers });
+
+    // add async before customer parameter
+    // try {
+    //   await deleteCustomer(customerId);
+    // }
+    // catch (ex) {
+    //   if (ex.response && ex.response.status === 404)
+    //     toast.error('This customer has already been deleted.');
+
+    //   this.setState({customers: originalCustomers});
+    // }
   };
 
   handleEdit = (customer) => {

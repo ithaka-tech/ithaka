@@ -1,7 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import Dashboard from "./components/dashboard";
 import NewCustomerForm from "./components/newCustomerForm";
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 const App = () => {
@@ -9,6 +11,7 @@ const App = () => {
 
   return (
     <React.Fragment>
+      <ToastContainer />
       <Routes>
         <Route
           path="home/customers/new"
