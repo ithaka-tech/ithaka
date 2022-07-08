@@ -3,6 +3,7 @@ import Joi from "joi-browser";
 import Input from "./input";
 import Select from "./select";
 import Radio from "./radio";
+import SigninInput from "./signinInput";
 
 class Form extends Component {
   state = {
@@ -87,6 +88,23 @@ class Form extends Component {
         value={data[name]}
         label={label}
         format={format}
+        placeholder={placeholder}
+        onChange={this.handleChange}
+        error={errors[name]}
+      />
+    );
+  }
+
+  renderSignin(name, id, label, placeholder, type) {
+    const { data, errors } = this.state;
+    console.log("error", errors);
+    return (
+      <SigninInput
+        type={type}
+        name={name}
+        id={id}
+        value={data[name]}
+        label={label}
         placeholder={placeholder}
         onChange={this.handleChange}
         error={errors[name]}

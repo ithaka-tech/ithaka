@@ -34,18 +34,16 @@ class NewCustomerForm extends Form {
     paymentMode: Joi.string().required(),
   };
 
-  doSubmit = () => {
+  doSubmit = async () => {
     const { navigate } = this.props;
     const { data: customer } = this.state;
     console.log(customer);
 
-    // add async before the parameter ()
-    // await saveCustomer(customer);
+    await saveCustomer(customer);
     navigate("/home/customers");
   };
 
   render() {
-    console.log(this.state.errors);
     return (
       <React.Fragment>
         <div className="d-flex justify-content-center bg-light">

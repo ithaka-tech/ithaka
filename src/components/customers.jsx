@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import _ from "lodash";
-import CustomersTable from "./customersTable";
-import Pagination from "./common/pagination";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { paginate } from "../utils/paginate";
 import { getFakeCustomers } from "../services/fakeCustomerService";
 import { getCustomers, deleteCustomer } from "../services/customerService";
+import { paginate } from "../utils/paginate";
+import CustomersTable from "./customersTable";
+import Pagination from "./common/pagination";
 import SearchBox from "./common/searchBox";
 
 class Customers extends Component {
@@ -18,30 +18,28 @@ class Customers extends Component {
     sortColumn: { path: "customer", order: "asc" },
   };
 
-  componentDidMount() {
-    // add async before componentDidMount() when using getCustomers()
-    this.setState({ customers: getFakeCustomers() });
+  async componentDidMount() {
+    const { data: customers } = await getCustomers();
+    this.setState({ customers });
   }
 
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
   };
 
-  handleDelete = (customer) => {
+  handleDelete = async (customer) => {
     const originalCustomers = this.state.customers;
     const customers = originalCustomers.filter((c) => c._id !== customer._id);
     this.setState({ customers });
 
-    // add async before customer parameter
-    // try {
-    //   await deleteCustomer(customerId);
-    // }
-    // catch (ex) {
-    //   if (ex.response && ex.response.status === 404)
-    //     toast.error('This customer has already been deleted.');
+    try {
+      await deleteCustomer(customer._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        toast.error("This customer has already been deleted.");
 
-    //   this.setState({customers: originalCustomers});
-    // }
+      this.setState({ customers: originalCustomers });
+    }
   };
 
   handleEdit = (customer) => {
@@ -97,12 +95,14 @@ class Customers extends Component {
         />
         <div className="d-flex justify-content-between mb-4">
           <div className="invisible">Add Customer</div>
-          <Pagination
-            itemsCount={totalCount}
-            pageSize={pageSize}
-            currentPage={currentPage}
-            onPageChange={this.handlePageChange}
-          />
+          {totalCount > 0 && (
+            <Pagination
+              itemsCount={totalCount}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={this.handlePageChange}
+            />
+          )}
           <Link to="new" className="btn btn-primary">
             Add Customer
           </Link>
