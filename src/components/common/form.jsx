@@ -14,8 +14,6 @@ class Form extends Component {
   validate = () => {
     const options = { abortEarly: false };
     const { error } = Joi.validate(this.state.data, this.schema, options);
-    console.log(error);
-    console.log(this.state.data);
     if (!error) return null;
 
     const errors = {};
@@ -97,7 +95,6 @@ class Form extends Component {
 
   renderSignin(name, id, label, placeholder, type) {
     const { data, errors } = this.state;
-    console.log("error", errors);
     return (
       <SigninInput
         type={type}

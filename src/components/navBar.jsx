@@ -6,7 +6,7 @@ class NavBar extends Component {
       <header className="navbar navbar-light sticky-top flex-md-nowrap p-0 shadow">
         <a
           className="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-4 text-white"
-          href="#"
+          href="/"
         >
           Ithaka
         </a>
@@ -24,7 +24,7 @@ class NavBar extends Component {
         <div className="flex-fill"></div>
         <div className="navbar-nav">
           <div className="nav-item text-nowrap">
-            <a className="nav-link px-3" href="/">
+            <a className="nav-link px-3" href="/signout">
               Sign out
             </a>
           </div>

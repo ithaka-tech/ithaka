@@ -1,4 +1,12 @@
-.form-signin {
+.form-signin-container{
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 40px;
+}
+
+.form-signin{
   max-width: 330px;
   padding: 15px;
 }
