@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import _ from "lodash";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getFakeCustomers } from "../services/fakeCustomerService";
 import { getCustomers, deleteCustomer } from "../services/customerService";
 import { paginate } from "../utils/paginate";
 import CustomersTable from "./customersTable";
 import Pagination from "./common/pagination";
 import SearchBox from "./common/searchBox";
+import auth from "../services/authService";
 
 class Customers extends Component {
   state = {
@@ -19,7 +19,10 @@ class Customers extends Component {
   };
 
   async componentDidMount() {
-    const { data: customers } = await getCustomers();
+    const sessionId = auth.getJwt();
+    const client = auth.getCurrentClient();
+    const response = await getCustomers(sessionId, client._id);
+    const customers = response.data.customer;
     this.setState({ customers });
   }
 

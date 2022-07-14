@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import SideBarItem from "./common/sideBarItem";
-import Customers from "./customers";
-import Estimates from "./estimates";
 import NavBar from "./navBar";
 import "../dashboard.css";
 
@@ -13,12 +11,8 @@ class DashBoard extends Component {
       { name: "Estimates", icon: "bi bi-calculator" },
       { name: "Customers", icon: "bi bi-people" },
     ],
-    selectedItem: "Dashboard",
   };
 
-  handleItemSelect = (item) => {
-    this.setState({ selectedItem: item });
-  };
   render() {
     return (
       <React.Fragment>
@@ -35,19 +29,13 @@ class DashBoard extends Component {
                 }}
               >
                 <ul className="nav nav-pills flex-column mb-auto mt-3">
-                  <SideBarItem
-                    items={this.state.items}
-                    selectedItem={this.state.selectedItem}
-                    onItemSelect={this.handleItemSelect}
-                  />
+                  <SideBarItem items={this.state.items} />
                   <hr />
                   <SideBarItem
                     items={[
                       { name: "Settings", icon: "bi bi-gear" },
                       { name: "Subscription", icon: "bi bi-arrow-repeat" },
                     ]}
-                    selectedItem={this.state.selectedItem}
-                    onItemSelect={this.handleItemSelect}
                   />
                 </ul>
               </div>
@@ -55,17 +43,7 @@ class DashBoard extends Component {
 
             <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
               <div className="content">
-                <Routes>
-                  <Route path="dashboard" element={<h1>"/" dashboard</h1>} />
-                  <Route path="estimates" element={<Estimates />} />
-                  <Route path="customers" element={<Customers />} />
-                  <Route path="settings" element={<h1>"/" settings</h1>} />
-                  <Route
-                    path="/subscription"
-                    element={<h1>"/" subscription</h1>}
-                  />
-                  <Route path="/" element={<h1>"/" path</h1>} />
-                </Routes>
+                <Outlet />
               </div>
             </main>
           </div>

@@ -3,12 +3,12 @@ import config from "../config.json";
 
 const apiEndpoint = config.apiUrl + "/customers";
 
-function customerUrl(id) {
-  return `${apiEndpoint}/${id}`;
+function customerUrl(sessionId, clientId, customerId) {
+  return `${apiEndpoint}/${sessionId}/${clientId}/${customerId}`;
 }
 
-export function getCustomers() {
-  return http.get(apiEndpoint);
+export function getCustomers(sessionId, clientId) {
+  return http.get(`${apiEndpoint}/${sessionId}/${clientId}`);
 }
 
 export function saveCustomer(customer) {

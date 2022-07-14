@@ -5,9 +5,11 @@ import config from "../config.json";
 const apiEndpoint = config.apiUrl + "/logins";
 const tokenKey = "token";
 
+http.setJwt(getJwt());
+
 export async function signin(email, password) {
-  const { data: response } = await http.post(apiEndpoint, { email, password });
-  const jwt = response.sessionId;
+  const response = await http.post(apiEndpoint, { email, password });
+  const jwt = response.data.sessionId;
   console.log("token: ", jwt);
   localStorage.setItem(tokenKey, jwt);
 }
@@ -20,7 +22,7 @@ export function signout() {
   localStorage.removeItem(tokenKey);
 }
 
-export function getCurrentUser() {
+export function getCurrentClient() {
   try {
     const jwt = localStorage.getItem(tokenKey);
     return jwtDecode(jwt);
@@ -29,9 +31,14 @@ export function getCurrentUser() {
   }
 }
 
+export function getJwt() {
+  localStorage.getItem(tokenKey);
+}
+
 export default {
   signin,
   signinWithJwt,
   signout,
-  getCurrentUser,
+  getCurrentClient,
+  getJwt,
 };

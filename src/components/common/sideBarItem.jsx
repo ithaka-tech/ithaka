@@ -1,14 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-const SideBarItem = ({ items, selectedItem, onItemSelect }) => {
+const SideBarItem = ({ items }) => {
+  let param = useParams()["*"];
   return items.map((item) => (
     <li key={item.name}>
       <Link
-        onClick={() => onItemSelect(item.name)}
         to={item.name.toLowerCase()}
         className={
-          item.name === selectedItem
+          item.name.toLowerCase() === param
             ? "nav-link active m-1"
             : "nav-link text-white m-1"
         }
