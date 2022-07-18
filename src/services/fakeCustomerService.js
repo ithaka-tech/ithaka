@@ -6,7 +6,7 @@ const customers = [
     email: "potomy4tofedotov@nbobd.com",
     address: "35 Elmwood Street Evans GA 30809",
     phoneNumber: "907-200-3112",
-    paymentMode: "Credit",
+    paymentMode: "cash",
     status: "Test",
     action: "Edit Delete",
   },
@@ -322,4 +322,8 @@ const customers = [
 
 export function getFakeCustomers() {
   return customers;
+}
+
+export function getFakeCustomer(id) {
+  return customers.find((c) => c._id === id);
 }

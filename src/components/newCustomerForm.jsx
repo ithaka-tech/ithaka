@@ -1,8 +1,13 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { saveCustomer } from "../services/customerService";
+import { Link, useParams } from "react-router-dom";
+import { getCustomers, saveCustomer } from "../services/customerService";
+import { getFakeCustomer } from "../services/fakeCustomerService";
 import Joi from "joi-browser";
 import Form from "./common/form";
+
+function withParams(Component) {
+  return (props) => <Component {...props} params={useParams()} />;
+}
 
 class NewCustomerForm extends Form {
   state = {
@@ -33,6 +38,47 @@ class NewCustomerForm extends Form {
     zip: Joi.string().label("Zip"),
     paymentMode: Joi.string().required(),
   };
+
+  // async populateCustomer() {
+  //   try {
+  //     const customerId = this.props.match.params.id;
+  //     if (customerId === "new") return;
+
+  //     const { data: customer } = await getCustomer(sessionId, customerId);
+  //     this.setState({ data: this.mapToViewModel(customer) });
+  //   } catch (ex) {
+  //     if (ex.response && ex.response.status === 404)
+  //       this.props.history.replace("/not-found");
+  //   }
+  // }
+
+  populateCustomer() {
+    const customerId = this.props.params.id;
+    console.log("customer id: ", customerId);
+    if (customerId === "new") return;
+
+    const customer = getFakeCustomer(customerId);
+    console.log("Customer being edited: ", customer);
+    this.setState({ data: this.mapToViewModel(customer) });
+  }
+
+  componentDidMount() {
+    this.populateCustomer();
+  }
+
+  mapToViewModel(customer) {
+    return {
+      customer: customer.customer,
+      email: customer.email,
+      phoneNumber: customer.phoneNumber,
+      address: "",
+      address2: "",
+      country: "",
+      state: "",
+      zip: "",
+      paymentMode: customer.paymentMode,
+    };
+  }
 
   doSubmit = async () => {
     const { navigate } = this.props;
@@ -128,4 +174,4 @@ class NewCustomerForm extends Form {
   }
 }
 
-export default NewCustomerForm;
+export default withParams(NewCustomerForm);

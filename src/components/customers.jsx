@@ -3,6 +3,7 @@ import _ from "lodash";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getCustomers, deleteCustomer } from "../services/customerService";
+import { getFakeCustomers } from "../services/fakeCustomerService";
 import { paginate } from "../utils/paginate";
 import CustomersTable from "./customersTable";
 import Pagination from "./common/pagination";
@@ -18,16 +19,22 @@ class Customers extends Component {
     sortColumn: { path: "customer", order: "asc" },
   };
 
-  async componentDidMount() {
-    const sessionId = auth.getJwt();
-    const client = auth.getCurrentClient();
-    const response = await getCustomers(sessionId, client._id);
-    const customers = response.data.customer;
-    this.setState({ customers });
+  componentDidMount() {
+    // const sessionId = auth.getJwt();
+    // const client = auth.getCurrentClient();
+    // const response = await getCustomers(sessionId, client._id);
+    // const customers = response.data.customer;
+    // this.setState({ customers });
+    const fakeCustomers = getFakeCustomers();
+    this.setState({ customers: fakeCustomers });
   }
 
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
+  };
+
+  handleConfirmDelete = (customer) => {
+    console.log(customer);
   };
 
   handleDelete = async (customer) => {
@@ -85,9 +92,11 @@ class Customers extends Component {
 
     return (
       <React.Fragment>
-        <div>
+        <div className="d-flex">
           <SearchBox value={searchQuery} onChange={this.handleSearch} />
-          <div className="invisible "></div>
+          <Link to="new" className="btn btn-primary my-2 ms-3 text-nowrap">
+            Add Customer
+          </Link>
         </div>
         <CustomersTable
           customers={customers}
@@ -96,8 +105,7 @@ class Customers extends Component {
           onDelete={this.handleDelete}
           onEdit={this.handleEdit}
         />
-        <div className="d-flex justify-content-between mb-4">
-          <div className="invisible">Add Customer</div>
+        <div className="d-flex justify-content-center mb-4">
           {totalCount > 0 && (
             <Pagination
               itemsCount={totalCount}
@@ -106,9 +114,6 @@ class Customers extends Component {
               onPageChange={this.handlePageChange}
             />
           )}
-          <Link to="new" className="btn btn-primary">
-            Add Customer
-          </Link>
         </div>
       </React.Fragment>
     );

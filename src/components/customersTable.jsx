@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Table from "./common/table";
+import DeleteConfirmation from "./deleteConfirmation";
+import { Link } from "react-router-dom";
 
 class CustomersTable extends Component {
   columns = [
@@ -14,18 +16,18 @@ class CustomersTable extends Component {
       key: "action",
       content: (customer) => (
         <React.Fragment>
-          <button
-            onClick={() => this.props.onEdit(customer)}
+          <Link
+            to={`../customers/${customer._id}`}
             className="btn btn-secondary btn-sm mx-1"
           >
             <i className="bi bi-pencil-square"></i>
-          </button>
-          <button
-            onClick={() => this.props.onDelete(customer)}
+          </Link>
+          <DeleteConfirmation
+            data={customer}
+            dataName={customer.customer}
             className="btn btn-danger btn-sm m-1"
-          >
-            <i className="bi bi-trash3"></i>
-          </button>
+            onDelete={this.props.onDelete}
+          />
         </React.Fragment>
       ),
     },

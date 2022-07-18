@@ -28,7 +28,7 @@ const App = () => {
       <ToastContainer />
       <Routes>
         <Route
-          path="home/customers/new"
+          path="home/customers/:id"
           element={<NewCustomerForm navigate={navigate} />}
         />
         <Route

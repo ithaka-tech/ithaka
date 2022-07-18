@@ -3,6 +3,7 @@ import Joi from "joi-browser";
 import { Link } from "react-router-dom";
 import Form from "./common/form";
 import auth from "../services/authService";
+import logo from "../assets/ithaka-wp.png";
 import "../signinForm.css";
 
 class SigninForm extends Form {
@@ -34,13 +35,7 @@ class SigninForm extends Form {
       <div className="form-signin-container bg-light">
         <main className="form-signin w-100 m-auto">
           <form onSubmit={this.handleSubmit} className="justify-content-center">
-            <img
-              className="mb-4"
-              src="/docs/{{< param docs_version >}}/assets/brand/bootstrap-logo.svg"
-              alt=""
-              width="72"
-              height="57"
-            />
+            <img className="mb-4 rounded" src={logo} alt="logo" height="57" />
             <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
 
             {this.renderSignin(
