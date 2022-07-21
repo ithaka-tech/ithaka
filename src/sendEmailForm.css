@@ -1,0 +1,13 @@
+.form-email-container{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 40px;
+  }
+  
+  .form-email{
+    max-width: 600px;
+    padding: 15px;
+  }

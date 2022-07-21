@@ -10,7 +10,6 @@ http.setJwt(getJwt());
 export async function signin(email, password) {
   const response = await http.post(apiEndpoint, { email, password });
   const jwt = response.data.sessionId;
-  console.log("token: ", jwt);
   localStorage.setItem(tokenKey, jwt);
 }
 
@@ -32,7 +31,7 @@ export function getCurrentClient() {
 }
 
 export function getJwt() {
-  localStorage.getItem(tokenKey);
+  return localStorage.getItem(tokenKey);
 }
 
 export default {

@@ -19,14 +19,14 @@ class Customers extends Component {
     sortColumn: { path: "customer", order: "asc" },
   };
 
-  componentDidMount() {
-    // const sessionId = auth.getJwt();
-    // const client = auth.getCurrentClient();
-    // const response = await getCustomers(sessionId, client._id);
-    // const customers = response.data.customer;
-    // this.setState({ customers });
-    const fakeCustomers = getFakeCustomers();
-    this.setState({ customers: fakeCustomers });
+  async componentDidMount() {
+    const sessionId = auth.getJwt();
+    console.log(sessionId);
+    const response = await getCustomers(sessionId);
+    const customers = response.data.customer;
+    this.setState({ customers });
+    // const fakeCustomers = getFakeCustomers();
+    // this.setState({ customers: fakeCustomers });
   }
 
   handleSort = (sortColumn) => {
@@ -74,6 +74,9 @@ class Customers extends Component {
     } = this.state;
 
     let filtered = allCustomers;
+
+    if (!filtered) filtered = [];
+
     if (searchQuery)
       filtered = allCustomers.filter((c) =>
         c.customer.toLowerCase().startsWith(searchQuery.toLowerCase())
@@ -93,18 +96,32 @@ class Customers extends Component {
     return (
       <React.Fragment>
         <div className="d-flex">
-          <SearchBox value={searchQuery} onChange={this.handleSearch} />
-          <Link to="new" className="btn btn-primary my-2 ms-3 text-nowrap">
+          <SearchBox
+            value={searchQuery}
+            onChange={this.handleSearch}
+            disabled={totalCount === 0}
+          />
+          <Link
+            to="addmethod"
+            className="btn btn-primary my-2 ms-3 text-nowrap"
+          >
             Add Customer
           </Link>
         </div>
-        <CustomersTable
-          customers={customers}
-          sortColumn={sortColumn}
-          onSort={this.handleSort}
-          onDelete={this.handleDelete}
-          onEdit={this.handleEdit}
-        />
+        {totalCount > 0 && (
+          <CustomersTable
+            customers={customers}
+            sortColumn={sortColumn}
+            onSort={this.handleSort}
+            onDelete={this.handleDelete}
+            onEdit={this.handleEdit}
+          />
+        )}
+        {totalCount === 0 && (
+          <h6 className="my-3 ms-1">
+            Seems a little empty in here... Try adding a customer.
+          </h6>
+        )}
         <div className="d-flex justify-content-center mb-4">
           {totalCount > 0 && (
             <Pagination

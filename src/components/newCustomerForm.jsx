@@ -1,9 +1,10 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { getCustomers, saveCustomer } from "../services/customerService";
+import { getCustomer, saveCustomer } from "../services/customerService";
 import { getFakeCustomer } from "../services/fakeCustomerService";
 import Joi from "joi-browser";
 import Form from "./common/form";
+import auth from "../services/authService";
 
 function withParams(Component) {
   return (props) => <Component {...props} params={useParams()} />;
@@ -12,7 +13,7 @@ function withParams(Component) {
 class NewCustomerForm extends Form {
   state = {
     data: {
-      customer: "",
+      name: "",
       email: "",
       phoneNumber: "",
       address: "",
@@ -28,7 +29,7 @@ class NewCustomerForm extends Form {
 
   schema = {
     _id: Joi.string(),
-    customer: Joi.string().required().label("Full Name"),
+    name: Joi.string().required().label("Full Name"),
     email: Joi.string().email().required().label("Email"),
     phoneNumber: Joi.string().label("Phone Number"),
     address: Joi.string().required().label("Address"),
@@ -39,28 +40,27 @@ class NewCustomerForm extends Form {
     paymentMode: Joi.string().required(),
   };
 
-  // async populateCustomer() {
-  //   try {
-  //     const customerId = this.props.match.params.id;
-  //     if (customerId === "new") return;
-
-  //     const { data: customer } = await getCustomer(sessionId, customerId);
-  //     this.setState({ data: this.mapToViewModel(customer) });
-  //   } catch (ex) {
-  //     if (ex.response && ex.response.status === 404)
-  //       this.props.history.replace("/not-found");
-  //   }
-  // }
-
-  populateCustomer() {
-    const customerId = this.props.params.id;
-    console.log("customer id: ", customerId);
-    if (customerId === "new") return;
-
-    const customer = getFakeCustomer(customerId);
-    console.log("Customer being edited: ", customer);
-    this.setState({ data: this.mapToViewModel(customer) });
+  async populateCustomer() {
+    try {
+      const customerId = this.props.params.id;
+      if (customerId === "new") return;
+      const sessionId = auth.getJwt();
+      const { data: customer } = await getCustomer(sessionId, customerId);
+      this.setState({ data: this.mapToViewModel(customer) });
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) console.log("not-found");
+    }
   }
+
+  // populateCustomer() {
+  //   const customerId = this.props.params.id;
+  //   console.log("customer id: ", customerId);
+  //   if (customerId === "new") return;
+
+  //   const customer = getFakeCustomer(customerId);
+  //   console.log("Customer being edited: ", customer);
+  //   this.setState({ data: this.mapToViewModel(customer) });
+  // }
 
   componentDidMount() {
     this.populateCustomer();
@@ -68,7 +68,7 @@ class NewCustomerForm extends Form {
 
   mapToViewModel(customer) {
     return {
-      customer: customer.customer,
+      name: customer.name,
       email: customer.email,
       phoneNumber: customer.phoneNumber,
       address: "",
@@ -84,8 +84,8 @@ class NewCustomerForm extends Form {
     const { navigate } = this.props;
     const { data: customer } = this.state;
     console.log(customer);
-
-    await saveCustomer(customer);
+    const sessionId = auth.getJwt();
+    await saveCustomer(sessionId, customer);
     navigate("/home/customers");
   };
 
@@ -97,7 +97,7 @@ class NewCustomerForm extends Form {
             <h4 className="mb-3">Customer Form</h4>
             <form onSubmit={this.handleSubmit}>
               <div className="row g-3">
-                {this.renderInput("customer", "Full Name", "col-12")}
+                {this.renderInput("name", "Full Name", "col-12")}
                 {this.renderInput(
                   "email",
                   "Email",
@@ -152,8 +152,8 @@ class NewCustomerForm extends Form {
                 {this.renderRadio(
                   "paymentMode",
                   [
-                    { _id: "cash", label: "Cash on Delivery" },
-                    { _id: "transfer", label: "Bank Transfer" },
+                    { _id: "Cash on Delivery", label: "Cash on Delivery" },
+                    { _id: "Bank Transfer", label: "Bank Transfer" },
                   ],
                   "my-3"
                 )}

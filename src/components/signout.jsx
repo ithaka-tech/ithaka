@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import auth from "../services/authService";
 
 const SignOut = () => {
-  const navigate = useNavigate();
   useEffect(() => {
     auth.signout();
-    navigate("/signin");
+    console.log("signout");
+    window.location = "/signin";
   }, []);
 
   return null;

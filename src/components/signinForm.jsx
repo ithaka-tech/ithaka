@@ -15,13 +15,12 @@ class SigninForm extends Form {
   };
 
   doSubmit = async () => {
-    const { navigate } = this.props;
     try {
       const { data } = this.state;
       await auth.signin(data.email, data.password);
-
-      navigate("/");
+      window.location = "/";
     } catch (ex) {
+      console.log(ex);
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors };
         errors.email = ex.response.data;
@@ -35,9 +34,10 @@ class SigninForm extends Form {
       <div className="form-signin-container bg-light">
         <main className="form-signin w-100 m-auto">
           <form onSubmit={this.handleSubmit} className="justify-content-center">
-            <img className="mb-4 rounded" src={logo} alt="logo" height="57" />
-            <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-
+            <div className="d-flex flex-wrap justify-content-center">
+              <img className="mb-4 rounded" src={logo} alt="logo" height="57" />
+              <h1 className="h3 mb-4 fw-normal">Please Sign In</h1>
+            </div>
             {this.renderSignin(
               "email",
               "floatingInput",
