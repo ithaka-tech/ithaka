@@ -5,13 +5,12 @@ import { Link } from "react-router-dom";
 
 class CustomersTable extends Component {
   columns = [
-    { path: "trackingId", label: "Tracking ID" },
-    { path: "customer", label: "Customer" },
+    // { path: "_id", label: "Tracking ID" },
+    { path: "name", label: "Customer" },
     { path: "email", label: "Email" },
     { path: "address", label: "Address" },
     { path: "phoneNumber", label: "Phone Number" },
     { path: "paymentMode", label: "Payment Mode" },
-    { path: "status", label: "Status" },
     {
       key: "action",
       content: (customer) => (
@@ -24,7 +23,7 @@ class CustomersTable extends Component {
           </Link>
           <DeleteConfirmation
             data={customer}
-            dataName={customer.customer}
+            dataName={customer.name}
             className="btn btn-danger btn-sm m-1"
             onDelete={this.props.onDelete}
           />
@@ -35,10 +34,20 @@ class CustomersTable extends Component {
 
   render() {
     const { customers, sortColumn, onSort } = this.props;
+    const adjustedCustomers = customers.map((c) => {
+      let newAddress;
+      if (!!c.address2.split(" ").join("")) {
+        newAddress = `${c.address}, ${c.address2}, ${c.city}, ${c.state}, ${c.country}, ${c.zip}`;
+        console.log("address2", c.address2);
+      } else {
+        newAddress = `${c.address}, ${c.city}, ${c.state}, ${c.country}, ${c.zip}`;
+      }
+      return { ...c, address: newAddress };
+    });
     return (
       <Table
         columns={this.columns}
-        data={customers}
+        data={adjustedCustomers}
         sortColumn={sortColumn}
         onSort={onSort}
       />

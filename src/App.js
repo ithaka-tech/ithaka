@@ -10,10 +10,10 @@ import auth from "./services/authService";
 import ProtectedRoute from "./components/common/protectedRoute";
 import Estimates from "./components/estimates";
 import Customers from "./components/customers";
-import "react-toastify/dist/ReactToastify.css";
-import "./App.css";
 import AddCustomerMethod from "./components/addCustomerMethod";
 import SendEmailForm from "./components/sendEmailForm";
+import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
 
 const App = () => {
   const [client, setClient] = useState("");

@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { getCustomer, saveCustomer } from "../services/customerService";
-import { getFakeCustomer } from "../services/fakeCustomerService";
 import Joi from "joi-browser";
 import Form from "./common/form";
 import auth from "../services/authService";
@@ -13,13 +12,15 @@ function withParams(Component) {
 class NewCustomerForm extends Form {
   state = {
     data: {
+      _id: "",
       name: "",
       email: "",
       phoneNumber: "",
       address: "",
       address2: "",
-      country: "",
+      city: "",
       state: "",
+      country: "",
       zip: "",
       paymentMode: "",
     },
@@ -34,8 +35,9 @@ class NewCustomerForm extends Form {
     phoneNumber: Joi.string().label("Phone Number"),
     address: Joi.string().required().label("Address"),
     address2: Joi.string().allow(""),
-    country: Joi.string().label("Country"),
+    city: Joi.string().label("City"),
     state: Joi.string().label("State"),
+    country: Joi.string().label("Country"),
     zip: Joi.string().label("Zip"),
     paymentMode: Joi.string().required(),
   };
@@ -45,22 +47,13 @@ class NewCustomerForm extends Form {
       const customerId = this.props.params.id;
       if (customerId === "new") return;
       const sessionId = auth.getJwt();
-      const { data: customer } = await getCustomer(sessionId, customerId);
+      const response = await getCustomer(sessionId, customerId);
+      const customer = response.data.customer;
       this.setState({ data: this.mapToViewModel(customer) });
     } catch (ex) {
       if (ex.response && ex.response.status === 404) console.log("not-found");
     }
   }
-
-  // populateCustomer() {
-  //   const customerId = this.props.params.id;
-  //   console.log("customer id: ", customerId);
-  //   if (customerId === "new") return;
-
-  //   const customer = getFakeCustomer(customerId);
-  //   console.log("Customer being edited: ", customer);
-  //   this.setState({ data: this.mapToViewModel(customer) });
-  // }
 
   componentDidMount() {
     this.populateCustomer();
@@ -68,14 +61,16 @@ class NewCustomerForm extends Form {
 
   mapToViewModel(customer) {
     return {
+      _id: customer._id,
       name: customer.name,
       email: customer.email,
       phoneNumber: customer.phoneNumber,
-      address: "",
-      address2: "",
-      country: "",
-      state: "",
-      zip: "",
+      address: customer.address,
+      address2: customer.address2,
+      city: customer.city,
+      state: customer.state,
+      country: customer.country,
+      zip: customer.zip,
       paymentMode: customer.paymentMode,
     };
   }
@@ -83,7 +78,6 @@ class NewCustomerForm extends Form {
   doSubmit = async () => {
     const { navigate } = this.props;
     const { data: customer } = this.state;
-    console.log(customer);
     const sessionId = auth.getJwt();
     await saveCustomer(sessionId, customer);
     navigate("/home/customers");
@@ -123,24 +117,25 @@ class NewCustomerForm extends Form {
                   "col-12",
                   "Apartment or suite"
                 )}
-                {this.renderSelect(
-                  "country",
-                  "Country",
-                  [
-                    { _id: "unitedStates", name: "United States" },
-                    { _id: "vietnam", name: "Vietnam" },
-                  ],
-                  "col-md-5",
-                  "Choose..."
-                )}
+                {this.renderInput("city", "City", "col-12", "")}
                 {this.renderSelect(
                   "state",
                   "State",
                   [
-                    { _id: "pennsylvania", name: "Pennsylvania" },
-                    { _id: "florida", name: "Florida" },
+                    { _id: "PA", name: "Pennsylvania" },
+                    { _id: "FL", name: "Florida" },
                   ],
                   "col-md-4",
+                  "Choose..."
+                )}
+                {this.renderSelect(
+                  "country",
+                  "Country",
+                  [
+                    { _id: "United States", name: "United States" },
+                    { _id: "Vietnam", name: "Vietnam" },
+                  ],
+                  "col-md-5",
                   "Choose..."
                 )}
                 {this.renderInput("zip", "Zip", "col-md-3")}

@@ -24,12 +24,12 @@ class TableHeader extends Component {
   render() {
     return (
       <thead>
-        <tr>
+        <tr style={{ height: "40px" }}>
           {this.props.columns.map((column) => (
             <th
               scope="col"
               style={{ cursor: "pointer", userSelect: "none" }}
-              className="clickable"
+              className="clickable mb-5 align-top"
               key={column.path || column.key}
               onClick={() => this.raiseSort(column.path)}
             >

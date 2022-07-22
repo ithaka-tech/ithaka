@@ -3,7 +3,6 @@ import _ from "lodash";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getCustomers, deleteCustomer } from "../services/customerService";
-import { getFakeCustomers } from "../services/fakeCustomerService";
 import { paginate } from "../utils/paginate";
 import CustomersTable from "./customersTable";
 import Pagination from "./common/pagination";
@@ -21,12 +20,9 @@ class Customers extends Component {
 
   async componentDidMount() {
     const sessionId = auth.getJwt();
-    console.log(sessionId);
     const response = await getCustomers(sessionId);
-    const customers = response.data.customer;
+    const customers = response.data.customers;
     this.setState({ customers });
-    // const fakeCustomers = getFakeCustomers();
-    // this.setState({ customers: fakeCustomers });
   }
 
   handleSort = (sortColumn) => {
@@ -43,7 +39,8 @@ class Customers extends Component {
     this.setState({ customers });
 
     try {
-      await deleteCustomer(customer._id);
+      const sessionId = auth.getJwt();
+      await deleteCustomer(sessionId, customer._id);
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
         toast.error("This customer has already been deleted.");
@@ -79,7 +76,7 @@ class Customers extends Component {
 
     if (searchQuery)
       filtered = allCustomers.filter((c) =>
-        c.customer.toLowerCase().startsWith(searchQuery.toLowerCase())
+        c.name.toLowerCase().startsWith(searchQuery.toLowerCase())
       );
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
@@ -109,13 +106,15 @@ class Customers extends Component {
           </Link>
         </div>
         {totalCount > 0 && (
-          <CustomersTable
-            customers={customers}
-            sortColumn={sortColumn}
-            onSort={this.handleSort}
-            onDelete={this.handleDelete}
-            onEdit={this.handleEdit}
-          />
+          <div className="mt-2">
+            <CustomersTable
+              customers={customers}
+              sortColumn={sortColumn}
+              onSort={this.handleSort}
+              onDelete={this.handleDelete}
+              onEdit={this.handleEdit}
+            />
+          </div>
         )}
         {totalCount === 0 && (
           <h6 className="my-3 ms-1">

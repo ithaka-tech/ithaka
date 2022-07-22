@@ -25,6 +25,6 @@ export function saveCustomer(sessionId, customer) {
   return http.post(`${apiEndpoint}/${sessionId}`, customer);
 }
 
-export function deleteCustomer(customerId) {
-  return http.delete(customerUrl(customerId));
+export function deleteCustomer(sessionId, customerId) {
+  return http.delete(customerUrl(sessionId, customerId));
 }
