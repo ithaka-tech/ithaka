@@ -29,10 +29,6 @@ class Customers extends Component {
     this.setState({ sortColumn });
   };
 
-  handleConfirmDelete = (customer) => {
-    console.log(customer);
-  };
-
   handleDelete = async (customer) => {
     const originalCustomers = this.state.customers;
     const customers = originalCustomers.filter((c) => c._id !== customer._id);
@@ -42,15 +38,11 @@ class Customers extends Component {
       const sessionId = auth.getJwt();
       await deleteCustomer(sessionId, customer._id);
     } catch (ex) {
-      if (ex.response && ex.response.status === 404)
+      if (ex.response && ex.response.status === 400)
         toast.error("This customer has already been deleted.");
 
       this.setState({ customers: originalCustomers });
     }
-  };
-
-  handleEdit = (customer) => {
-    console.log(customer);
   };
 
   handlePageChange = (page) => {
@@ -83,12 +75,16 @@ class Customers extends Component {
 
     const customers = paginate(sorted, currentPage, pageSize);
 
-    return { totalCount: filtered.length, data: customers };
+    return {
+      totalCount: filtered.length,
+      data: customers,
+      visible: allCustomers.length,
+    };
   };
 
   render() {
     const { currentPage, pageSize, searchQuery, sortColumn } = this.state;
-    const { totalCount, data: customers } = this.getPageData();
+    const { totalCount, data: customers, visible } = this.getPageData();
 
     return (
       <React.Fragment>
@@ -96,7 +92,7 @@ class Customers extends Component {
           <SearchBox
             value={searchQuery}
             onChange={this.handleSearch}
-            disabled={totalCount === 0}
+            disabled={visible === 0}
           />
           <Link
             to="addmethod"
@@ -105,7 +101,7 @@ class Customers extends Component {
             Add Customer
           </Link>
         </div>
-        {totalCount > 0 && (
+        {visible > 0 && (
           <div className="mt-2">
             <CustomersTable
               customers={customers}
@@ -116,13 +112,13 @@ class Customers extends Component {
             />
           </div>
         )}
-        {totalCount === 0 && (
+        {visible === 0 && (
           <h6 className="my-3 ms-1">
             Seems a little empty in here... Try adding a customer.
           </h6>
         )}
         <div className="d-flex justify-content-center mb-4">
-          {totalCount > 0 && (
+          {visible > 0 && (
             <Pagination
               itemsCount={totalCount}
               pageSize={pageSize}

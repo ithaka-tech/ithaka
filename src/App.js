@@ -53,7 +53,7 @@ const App = () => {
           <Route path="settings" element={<h1>Coming soon!</h1>} />
           <Route path="subscription" element={<h1>Coming soon!</h1>} />
         </Route>
-        <Route path="register" element={<RegisterForm />} />
+        <Route path="register" element={<RegisterForm navigate={navigate} />} />
         <Route path="signout" element={<SignOut />} />
         <Route
           path="signin"

@@ -1,88 +1,141 @@
 import React, { Component } from "react";
-import axios from "axios";
-
-const apiEndpoint = "";
+import _ from "lodash";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getEstimates, deleteEstimate } from "../services/estimateService";
+import { paginate } from "../utils/paginate";
+import EstimatesTable from "./estimatesTable";
+import Pagination from "./common/pagination";
+import SearchBox from "./common/searchBox";
+import auth from "../services/authService";
 
 class Estimates extends Component {
-  state = { posts: [] };
-
-  //   async componentDidMount() {
-  //     //pending > resolved (success) OR rejected (failure)
-  //     const { data: posts } = await axios.get(apiEndpoint);
-  //     this.setState({ posts });
-  //   }
-
-  handleAdd = async () => {
-    const obj = { title: "a", body: "b" };
-    const { data: post } = await axios.post(apiEndpoint, obj);
-
-    const posts = [post, ...this.state.posts];
-    this.setState({ posts });
+  state = {
+    estimates: [
+      {
+        _id: "#1234",
+        division: "Mowing",
+        name: "Joe Smith",
+        date: "02/03/22",
+        amount: "$1000.00",
+        paymentMode: "Transfer to Bank",
+        status: "Delivered",
+      },
+    ],
+    currentPage: 1,
+    pageSize: 13,
+    searchQuery: "",
+    sortColumn: { path: "customer", order: "asc" },
   };
 
-  handleUpdate = async (post) => {
-    post.title = "UPDATED";
-    await axios.put(apiEndpoint + "/" + post.id, post);
+  // async componentDidMount() {
+  //   const sessionId = auth.getJwt();
+  //   const response = await getEstimates(sessionId);
+  //   const estimates = response.data.estimates;
+  //   this.setState({ estimates });
+  // }
 
-    const posts = [...this.state.posts];
-    const index = posts.indexOf(post);
-    posts[index] = { ...post };
-    this.setState({ posts });
+  handleSort = (sortColumn) => {
+    this.setState({ sortColumn });
   };
 
-  handleDelete = async (post) => {
-    await axios.delete(apiEndpoint + "/" + post.id);
+  handleDelete = async (estimate) => {
+    const originalEstimates = this.state.estimates;
+    const estimates = originalEstimates.filter((e) => e._id !== estimate._id);
+    this.setState({ estimates });
 
-    const posts = this.state.posts.filter((p) => p.id !== post.id);
-    this.setState({ posts });
+    try {
+      const sessionId = auth.getJwt();
+      await deleteEstimate(sessionId, estimate._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400)
+        toast.error("This estimate has already been deleted.");
+
+      this.setState({ estimates: originalEstimates });
+    }
+  };
+
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  };
+
+  handleSearch = (query) => {
+    this.setState({ searchQuery: query, currentPage: 1 });
+  };
+
+  getPageData = () => {
+    const {
+      currentPage,
+      pageSize,
+      searchQuery,
+      sortColumn,
+      estimates: allEstimates,
+    } = this.state;
+
+    let filtered = allEstimates;
+
+    if (!filtered) filtered = [];
+
+    if (searchQuery)
+      filtered = allEstimates.filter((e) =>
+        e.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+
+    const estimates = paginate(sorted, currentPage, pageSize);
+
+    return {
+      totalCount: filtered.length,
+      data: estimates,
+      visible: allEstimates.length,
+    };
   };
 
   render() {
+    const { currentPage, pageSize, searchQuery, sortColumn } = this.state;
+    const { totalCount, data: estimates, visible } = this.getPageData();
+
     return (
       <React.Fragment>
-        <div className="shadow-sm">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Tracking ID</th>
-                <th>Estimate Type</th>
-                <th>Customer</th>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Payment Mode</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.posts.map((post) => (
-                <tr key={post.id}>
-                  <td>{post.title}</td>
-                  <td>
-                    <button
-                      className="btn btn-info btn-sm"
-                      onClick={() => this.handleUpdate(post)}
-                    >
-                      Update
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => this.handleDelete(post)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="d-flex">
+          <SearchBox
+            value={searchQuery}
+            onChange={this.handleSearch}
+            disabled={visible === 0}
+          />
+          <Link
+            to="addmethod"
+            className="btn btn-primary my-2 ms-3 text-nowrap"
+          >
+            Add Estimate
+          </Link>
         </div>
-        <div className="footer">
-          <button className="btn btn-primary me-4" onClick={this.handleAdd}>
-            Create Estimate
-          </button>
+        {visible > 0 && (
+          <div className="mt-2">
+            <EstimatesTable
+              estimates={estimates}
+              sortColumn={sortColumn}
+              onSort={this.handleSort}
+              onDelete={this.handleDelete}
+              onEdit={this.handleEdit}
+            />
+          </div>
+        )}
+        {visible === 0 && (
+          <h6 className="my-3 ms-1">
+            Seems a little empty in here... Try adding an estimate.
+          </h6>
+        )}
+        <div className="d-flex justify-content-center mb-4">
+          {visible > 0 && (
+            <Pagination
+              itemsCount={totalCount}
+              pageSize={pageSize}
+              currentPage={currentPage}
+              onPageChange={this.handlePageChange}
+            />
+          )}
         </div>
       </React.Fragment>
     );

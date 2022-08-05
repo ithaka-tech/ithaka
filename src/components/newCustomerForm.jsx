@@ -12,7 +12,6 @@ function withParams(Component) {
 class NewCustomerForm extends Form {
   state = {
     data: {
-      _id: "",
       name: "",
       email: "",
       phoneNumber: "",

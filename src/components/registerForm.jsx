@@ -15,15 +15,20 @@ class RegisterForm extends Form {
     _id: Joi.string(),
     name: Joi.string().required().label("Full Name"),
     email: Joi.string().email().required().label("Email"),
-    password: Joi.string().required().label("Password"),
-    confirmPassword: Joi.string().required().valid(Joi.ref("password")),
+    password: Joi.string().required().min(8).label("Password"),
+    confirmPassword: Joi.string()
+      .required()
+      .valid(Joi.ref("password"))
+      .label("Confirm Password"),
   };
 
   doSubmit = async () => {
     const { navigate } = this.props;
-    console.log("Submitted:", this.state.data);
     try {
-      await clientService.register(this.state.data);
+      const body = { ...this.state.data };
+      delete body.confirmPassword;
+      console.log("Submitted:", body);
+      await clientService.register(body);
       navigate("/");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
