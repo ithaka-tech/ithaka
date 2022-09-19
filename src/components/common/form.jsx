@@ -51,8 +51,6 @@ class Form extends Component {
     this.setState({ data, errors });
   };
 
-  handleRadioValue = () => {};
-
   renderButton(label, format) {
     return (
       <button disabled={this.validate()} className={format}>

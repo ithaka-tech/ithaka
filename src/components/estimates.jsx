@@ -104,10 +104,7 @@ class Estimates extends Component {
             onChange={this.handleSearch}
             disabled={visible === 0}
           />
-          <Link
-            to="addmethod"
-            className="btn btn-primary my-2 ms-3 text-nowrap"
-          >
+          <Link to="new" className="btn btn-primary my-2 ms-3 text-nowrap">
             Add Estimate
           </Link>
         </div>

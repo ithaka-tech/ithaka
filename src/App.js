@@ -12,6 +12,7 @@ import Estimates from "./components/estimates";
 import Customers from "./components/customers";
 import AddCustomerMethod from "./components/addCustomerMethod";
 import SendEmailForm from "./components/sendEmailForm";
+import NewEstimate from "./components/newEstimate";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
@@ -30,6 +31,7 @@ const App = () => {
     <React.Fragment>
       <ToastContainer />
       <Routes>
+        <Route path="home/estimates/new" element={<NewEstimate />} />
         <Route
           path="home/customers/:id"
           element={<NewCustomerForm navigate={navigate} />}
